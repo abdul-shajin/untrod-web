@@ -7,6 +7,7 @@ import SiteHeader from "../components/site-header";
 import { useAuth } from "@/lib/auth-context";
 import { mockRides, mockStamps, type Ride, type Stamp } from "@/lib/mock-data";
 import { googleMapsUrl } from "@/lib/maps-url";
+import { useFirestoreData } from "@/lib/use-firestore-data";
 
 export default function DashboardPage() {
   const { user, loading, configured, signOut } = useAuth();
@@ -17,9 +18,13 @@ export default function DashboardPage() {
     if (!loading && !user) router.replace("/login");
   }, [configured, loading, user, router]);
 
-  // Always show mock data for now — once Firestore is wired we'll swap.
-  const rides = mockRides;
-  const stamps = mockStamps;
+  const live = useFirestoreData(user);
+
+  // Show real data when signed in; fall back to mock for the dev preview /
+  // first-time user with zero rides yet.
+  const showingMock = !configured || !user || (!live.loading && live.rides.length === 0);
+  const rides: Ride[] = showingMock ? mockRides : live.rides;
+  const stamps: Stamp[] = showingMock ? mockStamps : live.stamps;
   const totalKm = rides.reduce((s, r) => s + r.distanceM, 0) / 1000;
   const newKm = rides.reduce((s, r) => s + r.newRoadsM, 0) / 1000;
   const unlocked = stamps.filter((s) => s.unlockedAtMs).length;
@@ -55,6 +60,18 @@ export default function DashboardPage() {
               you&apos;re seeing mock data. Copy <code>.env.local.example</code> to{" "}
               <code>.env.local</code> and fill in your Firebase project to enable real
               auth + Firestore.
+            </p>
+          </div>
+        )}
+        {configured && user && live.rides.length === 0 && !live.loading && (
+          <div
+            className="card p-5 my-6"
+            style={{ background: "var(--amber-100)", borderColor: "var(--amber-300)" }}
+          >
+            <p className="text-sm" style={{ color: "var(--amber-900)" }}>
+              <strong>No rides yet.</strong> Open the Untrod app on your phone and
+              finish a ride — it&apos;ll show up here automatically. Sample data
+              shown below in the meantime.
             </p>
           </div>
         )}
