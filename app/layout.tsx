@@ -10,9 +10,35 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "untrod.in — Drive every road around you",
+  metadataBase: new URL("https://untrod.in"),
+  title: {
+    default: "untrod.in — Drive every road around you",
+    template: "%s · untrod.in",
+  },
   description:
-    "Aimless rides, tracked. Untrod plans short round-trip loops over roads you haven't ridden yet — for cycle, bike, motorcycle and car. Take a lap, clear your head.",
+    "Aimless rides, tracked. untrod.in plans short round-trip loops over roads you haven't ridden yet — for cycle, bike, motorcycle and car. Take a lap, clear your head.",
+  applicationName: "untrod.in",
+  keywords: [
+    "explore", "ride tracker", "round trip", "loop routes",
+    "cycling", "motorcycle", "drive", "OpenStreetMap", "India",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "untrod.in",
+    title: "untrod.in — Drive every road around you",
+    description:
+      "Short round-trip loops over roads you haven't ridden yet. Take a lap, clear your head.",
+    url: "https://untrod.in",
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "untrod.in — Drive every road around you",
+    description:
+      "Short round-trip loops over roads you haven't ridden yet.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {

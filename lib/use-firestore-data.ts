@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   collection,
+  limit,
   onSnapshot,
   orderBy,
   query,
@@ -38,7 +39,10 @@ export function useFirestoreData(user: User | null): State {
     setState((s) => ({ ...s, loading: true, error: null }));
 
     const userRef = collection(db, "users", user.uid, "rides");
-    const ridesQ = query(userRef, orderBy("startedAtMs", "desc"));
+    // Cap the live subscription so a power user with hundreds of rides doesn't
+    // download the whole history into the client. Pagination can be added
+    // later if anyone scrolls past 50.
+    const ridesQ = query(userRef, orderBy("startedAtMs", "desc"), limit(50));
     const achievementsRef = collection(db, "users", user.uid, "achievements");
 
     let rides: Ride[] = [];
@@ -76,7 +80,8 @@ export function useFirestoreData(user: User | null): State {
       unsubRides();
       unsubAch();
     };
-  }, [user]);
+    // Only re-subscribe when uid changes, not on every User object identity churn.
+  }, [user?.uid]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return state;
 }

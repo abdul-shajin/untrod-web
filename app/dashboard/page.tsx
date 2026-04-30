@@ -20,9 +20,21 @@ export default function DashboardPage() {
 
   const live = useFirestoreData(user);
 
-  // Show real data when signed in; fall back to mock for the dev preview /
-  // first-time user with zero rides yet.
-  const showingMock = !configured || !user || (!live.loading && live.rides.length === 0);
+  // Decide once everything that can settle has settled, to avoid mock→real→mock
+  // flicker. Order:
+  //   1. Firebase not configured → always mock (dev preview).
+  //   2. Auth still resolving → render mock (placeholder) but mark as loading.
+  //   3. No user → router will redirect; render mock briefly.
+  //   4. Live data still loading → keep last frame stable; show mock (so the
+  //      page is never blank during the first snapshot fetch).
+  //   5. User has zero rides → mock (onboarding hint).
+  //   6. Otherwise → real data.
+  const showingMock =
+    !configured ||
+    loading ||
+    !user ||
+    live.loading ||
+    live.rides.length === 0;
   const rides: Ride[] = showingMock ? mockRides : live.rides;
   const stamps: Stamp[] = showingMock ? mockStamps : live.stamps;
   const totalKm = rides.reduce((s, r) => s + r.distanceM, 0) / 1000;
