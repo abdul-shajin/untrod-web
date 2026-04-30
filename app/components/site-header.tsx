@@ -15,7 +15,7 @@ export default function SiteHeader() {
         >
           U
         </span>
-        <span className="font-extrabold tracking-tight text-xl text-ink-high">Untrod</span>
+        <span className="font-extrabold tracking-tight text-xl text-ink-high">untrod.in</span>
       </Link>
       <nav className="flex items-center gap-2.5">
         {!loading && user ? (

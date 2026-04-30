@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Untrod — Drive every road around you",
+  title: "untrod.in — Drive every road around you",
   description:
     "Aimless rides, tracked. Untrod plans short round-trip loops over roads you haven't ridden yet — for cycle, bike, motorcycle and car. Take a lap, clear your head.",
 };

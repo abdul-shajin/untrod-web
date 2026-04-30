@@ -129,7 +129,7 @@ export default function Home() {
       </section>
 
       <footer className="px-6 sm:px-10 py-10 text-center text-ink-soft text-sm">
-        Built for people who like the long way home. © {new Date().getFullYear()} Untrod.
+        Built for people who like the long way home. © {new Date().getFullYear()} untrod.in
       </footer>
     </main>
   );
